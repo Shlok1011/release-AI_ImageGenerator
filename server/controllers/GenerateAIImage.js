@@ -1,6 +1,5 @@
 import * as dotnev from "dotenv";
 import { createError } from "../error.js";
-import { Configuration, OpenAIApi } from "openai";
 import axios from "axios";
 
 dotnev.config();
@@ -17,6 +16,7 @@ export const generateImage = async (req, res, next) => {
 
     const response = await axios.post(
       "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0",
+      
       { inputs: prompt },
       {
         headers: {
@@ -40,8 +40,6 @@ export const generateImage = async (req, res, next) => {
     return next(createError(status, message));
   }
 };
-
-
 
 
 //Setup openAI api Key

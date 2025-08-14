@@ -1,6 +1,6 @@
 import styled, { ThemeProvider } from "styled-components";
 import { darkTheme } from "./utils/theme_temp"
-import Home from "./pages/HomePage.jsx";
+import Home from "./pages/Home.jsx";
 import CreatePost from "./pages/CreatePost";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
