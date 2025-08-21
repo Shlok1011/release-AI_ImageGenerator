@@ -1,0 +1,26 @@
+services:
+  # Backend Service
+  - type: web
+    name: ai-image-generator-backend
+    env: node
+    rootDir: server
+    buildCommand: npm install
+    startCommand: node index.js
+    plan: free
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+
+  # Frontend Service  
+  - type: web
+    name: ai-image-generator-frontend
+    env: static
+    rootDir: client
+    buildCommand: npm run build
+    staticPublishPath: build
+    plan: free
+    envVars:
+      - key: REACT_APP_API_URL
+        value: https://ai-image-generator-backend.onrender.com
