@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import * as dotenv from "dotenv";
 import PostRouter from "./routes/Posts.js";
 import GenerateImageRouter from "./routes/GenerateImage.js";
+import authRouters from "./routes/authRoutes.js"
 
 dotenv.config();
 
@@ -31,6 +32,7 @@ app.get("/", async (req, res) => {
 
 app.use("/api/post",PostRouter);
 app.use("/api/generateImage" , GenerateImageRouter);
+app.use("/api/auth" , authRouters);
 
 //function to connect to mongoDB
 const connectDB = () => {
@@ -47,7 +49,7 @@ const connectDB = () => {
 const startServer = async () => {
     try {
         connectDB();
-        app.listen(8080, () => console.log("Server started on port 8080"))
+        app.listen(8080, () => console.log("Server started on port 8080 , on shlok pc :)"));
     } catch (error) {
         console.log(error);
     }

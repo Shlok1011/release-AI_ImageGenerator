@@ -5,6 +5,10 @@ import { useEffect , useState} from "react";
 import { CircularProgress } from '@mui/material';
 import { GetPosts } from "../api";
 
+import Login from "./Login";
+import Signup from "./Signup";
+import AuthModal from "../components/AuthModel"
+
 const Container = styled.div`
   height:100%;
   overflow-y: scroll;
@@ -53,6 +57,16 @@ const Wrapper= styled.div`
   justify-content:center;
 `;
 
+const TopBar = styled.div`
+  width: 100%;
+  max-width: 1400px;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 18px;
+  gap: 12px;
+  margin-top:15px;
+`;
+
 const CardWrapper = styled.div`
   display:grid;
   gap: 20px;
@@ -74,6 +88,25 @@ const Home = () => {
   const [error,setError] = useState("");
   const [search,setSearch] = useState("");
   const [filteredPosts,setFilteredPosts] = useState([]);
+
+  const [showLogin, setShowLogin] = useState(true);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const closeModal = () => {
+    setShowAuthModal(false);
+    setIsAuthenticated(true);
+  }
+
+useEffect(() => {
+  const token = localStorage.getItem("token");
+  setIsAuthenticated(!!token); // true if token exists
+}, []);
+
+const handleLogout = () => {
+  localStorage.removeItem("token");
+  setIsAuthenticated(false);
+};
+
 
 
   // const item={
@@ -123,6 +156,66 @@ const Home = () => {
 
   return (
     <Container>
+
+
+    <TopBar>
+  {!isAuthenticated ? (
+    <>
+      <button
+        style={{
+          fontSize: "16px",
+          padding: "8px 18px",
+          borderRadius: "7px",
+          border: "none",
+          background: "#007bff",
+          color: "#fff",
+          cursor: "pointer",
+          paddingleft: "25px",
+        }}
+        onClick={() => { setShowLogin(true); setShowAuthModal(true); }}
+      >Login</button>
+      <button
+        style={{
+          fontSize: "16px",
+          marginLeft: "12px",
+          padding: "8px 18px",
+          borderRadius: "7px",
+          border: "none",
+          background: "#32b77b",
+          color: "#fff",
+          cursor: "pointer"
+        }}
+        onClick={() => { setShowLogin(false); setShowAuthModal(true); }}
+      >Sign Up</button>
+    </>
+  ):(
+    <button
+      style={{
+        fontSize: "16px",
+        padding: "8px 18px",
+        borderRadius: "7px",
+        border: "none",
+        background: "#ea2323", // red for logout
+        color: "#fff",
+        cursor: "pointer"
+      }}
+      onClick={handleLogout}
+    >
+      Logout
+    </button>
+  )}
+</TopBar>
+
+
+      {/* Modal popup for auth */}
+      <AuthModal show={showAuthModal} onClose={() => setShowAuthModal(false)}>
+        {showLogin
+          ? <Login onSwitch={() => setShowLogin(false)} onSuccess={closeModal}/>
+          : <Signup onSwitch={() => setShowLogin(true)} onSuccess={closeModal}/>}
+      </AuthModal>
+
+
+
       <Headline>Explore popular posts in the community!</Headline>
       <Span>⦿ Generated with AI ⦿</Span>
       <SearchBar search={search} setSearch={setSearch}/>

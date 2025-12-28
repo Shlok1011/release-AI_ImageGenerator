@@ -24,12 +24,12 @@ const Navbar = () => {
   const path = location.pathname.split("/");
   return (
     <Container>
-       GenAI
+       Imagina
       {path[1] === "post"? (
          <Button
         onClick={() => navigate("/")}
         text="Explore post"
-        leftIcon={<ExploreRounded style={{ fontSize: "18px" }} />}
+        leftIcon={<ExploreRounded style={{ fontSize: "18px"}} />}
         type="secondary"
       />
      ):(
