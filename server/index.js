@@ -36,8 +36,8 @@ app.use("/api/auth" , authRouters);
 
 //function to connect to mongoDB
 const connectDB = () => {
-   // console.log(process.env.MONGODB_URL);
     mongoose.set("strictQuery", true);
+    // console.log("DB URL:", process.env.MONGODB_URL);
     mongoose.connect(process.env.MONGODB_URL)
         .then(() => { console.log("MongoDB Connected") })
         .catch((err) => {

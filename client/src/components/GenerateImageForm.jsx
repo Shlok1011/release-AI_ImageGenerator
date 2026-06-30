@@ -10,7 +10,7 @@ import { CreatePost , GenerateAIImage } from "../api";
 const Form = styled.div`
   flex: 1;
   padding: 16px 20px;
-  dislay: flex;
+  display: flex;
   flex-direction: column;
   gap: 9%;
   justify-content: center;
@@ -61,7 +61,7 @@ const GenerateImageForm = ({
       .then((res) => {
         setPost({
           ...post,
-          photo: `data:image/jpge;base64,${res?.data?.photo}`,
+          photo: res?.data?.photo, // ✅ just URL,
         });
         setGenerateImageLoading(false);
       })

@@ -1,45 +1,84 @@
-import * as dotnev from "dotenv";
+import * as dotenv from "dotenv";
 import { createError } from "../error.js";
-import axios from "axios";
 
-dotnev.config();
+dotenv.config();
 
-// Controller to generate image using Hugging Face API
+// Controller to generate image using Pollinations API
 export const generateImage = async (req, res, next) => {
   try {
     const { prompt } = req.body;
-    console.log(prompt);
 
-    if (!prompt || typeof prompt !== 'string') {
+    if (!prompt || typeof prompt !== "string") {
       return next(createError(400, "Prompt is required and must be a string."));
     }
 
-    const response = await axios.post(
-      "https://router.huggingface.co/hf-inference/models/stabilityai/stable-diffusion-xl-base-1.0",
-      
-      { inputs: prompt },
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.HF_API_TOKEN}`,
-          "Content-Type": "application/json",
-          "Accept": "image/png"
-        },
-        responseType: "arraybuffer", // Important to receive image binary
-      }
-    );
+    console.log("Prompt:", prompt);
 
-    const base64Image = Buffer.from(response.data, 'binary').toString("base64");
+    // 🔥 Clean prompt (remove new lines / extra spaces)
+    const cleanPrompt = prompt.trim().replace(/\n/g, " ");
+
+    // 🔥 Generate image URL (with params to avoid API issues)
+    const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(
+      cleanPrompt
+    )}?width=1024&height=1024&seed=${Date.now()}&nologo=true`;
 
     return res.status(200).json({
-      photo: `${base64Image}`,
-    })
+      success: true,
+      photo: imageUrl,
+    });
+
   } catch (error) {
-    console.error("Hugging Face Error:", error?.response?.data || error.message);
-    const status = error?.response?.status || 500;
-    const message = error?.response?.data?.error || error.message;
-    return next(createError(status, message));
+    console.error("Pollinations Error:", error.message);
+    return next(createError(500, error.message));
   }
 };
+
+
+
+
+
+// import * as dotnev from "dotenv";
+// import { createError } from "../error.js";
+// import axios from "axios";
+
+// dotnev.config();
+
+// // Controller to generate image using Hugging Face API
+// export const generateImage = async (req, res, next) => {
+//   try {
+//     const { prompt } = req.body;
+//     console.log(prompt);
+
+//     if (!prompt || typeof prompt !== 'string') {
+//       return next(createError(400, "Prompt is required and must be a string."));
+//     }
+
+//     const response = await axios.post(
+//       "https://api-inference.huggingface.co/models/fal-ai/fast-lightning-sdxl",
+      
+//       { inputs: prompt },
+//       {
+//         headers: {
+//           Authorization: `Bearer ${process.env.HF_API_TOKEN}`,
+//           "Content-Type": "application/json",
+//           "Accept": "image/png"
+//         },
+//         responseType: "arraybuffer", // Important to receive image binary
+//       }
+//     );
+
+//     const base64Image = Buffer.from(response.data, 'binary').toString("base64");
+
+//     return res.status(200).json({
+//       photo: `${base64Image}`,
+//     })
+//   } catch (error) {
+//     console.error("Hugging Face Error:", error?.response?.data || error.message);
+//     const status = error?.response?.status || 500;
+//     const message = error?.response?.data?.error || error.message;
+//     return next(createError(status, message));
+//   }
+// };
 
 
 //Setup openAI api Key
@@ -73,4 +112,3 @@ export const generateImage = async (req, res, next) => {
 
 //     }
 // }
-
